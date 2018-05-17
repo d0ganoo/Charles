@@ -2,22 +2,24 @@
 import {getData, qs} from './recupdata';
 
 let tab = [];
+let filteredTab = [];
 const fieldLastname = document.getElementById('lastname');
 const fieldFirstname = document.getElementById('firstname');
 const fieldBalance = document.getElementById('balance');
-const fieldInput = document.getElementsByTagName('input')[0];
+const fieldInput = document.getElementById('filter');
+const fieldURL = document.getElementById('url');
 
 
 function showModalBox(profilDetails){
-	console.log(profilDetails);
-}
-
-function showDetails (id) {
-	for (let i = 0; i < tab.length; i++) {
-		if (tab[i].id == id) {
-			showModalBox(tab[i]);
-		}
-	}
+	let str = `<span onclick="document.getElementById('modal').innerHTML =''">Fermer [X]</span><br>
+			Nom: ${profilDetails.lastname}<br/>
+			Prenom: ${profilDetails.firstname}<br/>
+			Balance	${profilDetails.balance}<br/>
+			Age: ${profilDetails.age}<br/>
+			Email: ${profilDetails.email}<br/>
+			Adresse: ${profilDetails.address}<br/>
+			Societé: ${profilDetails.company}`;
+	document.getElementById('modal').innerHTML = str;
 }
 
 function updateView(profils){
@@ -32,75 +34,85 @@ function updateView(profils){
 	let tabProfils = document.querySelectorAll('tbody tr');
 	for (let i = 0; i < tabProfils.length; i++) {
 		tabProfils[i].addEventListener("click", () => {
-			for (let j = 0; j < tab.length; j++) {
-				if (tab[j].id == tabProfils[i].id) {
-					showModalBox(tab[i]);
+			for (let j = 0; j < profils.length; j++) {
+				if (profils[j].id == tabProfils[i].id) {
+					showModalBox(profils[i]);
 				}
 			}
 		});
 	}
 }
 
-getData().then(profils=> {
-	tab = profils;
-	updateView(profils);
-});
 
 function sort(name) {
 	let newTab = [];
-	let maxmin = tab[0][name];
+	let maxmin = filteredTab[0][name];
 	let index = 0;
 
 	document.getElementById(name).classList.toggle("sorted");
-	while(tab.length > 0) {
+	while(filteredTab.length > 0) {
 		console.log("while");
-		maxmin = tab[0][name];
-		for (let i = 0; i < tab.length; i++) {
+		maxmin = filteredTab[0][name];
+		for (let i = 0; i < filteredTab.length; i++) {
 			if (name.localeCompare("balance") == 0) {
 				if (document.getElementById(name).classList.contains("sorted")) {
-					if (parseFloat(tab[i][name]) >= parseFloat(maxmin)) {
-						maxmin = tab[i][name];
+					if (parseFloat(filteredTab[i][name]) >= parseFloat(maxmin)) {
+						maxmin = filteredTab[i][name];
 						index = i;
 					}
 				} else {
-					if (parseFloat(tab[i][name]) <= parseFloat(maxmin)) {
-						maxmin = tab[i][name];
+					if (parseFloat(filteredTab[i][name]) <= parseFloat(maxmin)) {
+						maxmin = filteredTab[i][name];
 						index = i;
 					}
 				}
 			} else {
 				if (document.getElementById(name).classList.contains("sorted")) {
-					if (maxmin.localeCompare(tab[i][name]) >= 0) {
-						maxmin = tab[i][name]; 
+					if (maxmin.localeCompare(filteredTab[i][name]) >= 0) {
+						maxmin = filteredTab[i][name]; 
 						index = i;
 					}
 				} else {
-					if (maxmin.localeCompare(tab[i][name]) <= 0) {
-						maxmin = tab[i][name];
+					if (maxmin.localeCompare(filteredTab[i][name]) <= 0) {
+						maxmin = filteredTab[i][name];
 						index = i;
 					}
 				}
 			}
 		}
-		newTab.push(tab[index]);
-		tab.splice(index, 1);
+		newTab.push(filteredTab[index]);
+		filteredTab.splice(index, 1);
 	}
-	tab = newTab;
-	updateView(tab);
+	filteredTab = newTab;
+	updateView(filteredTab);
 }
 
 function filter() {
-	let newTab = [];
+	filteredTab = [];
 
 	for (let i = 0; i < tab.length; i++) {
 		if (tab[i].lastname.toUpperCase().includes(fieldInput.value.toUpperCase()) || tab[i].firstname.toUpperCase().includes(fieldInput.value.toUpperCase())) {
-			newTab.push(tab[i]);
+			filteredTab.push(tab[i]);
 		}
 	}
-	updateView(newTab);
+	updateView(filteredTab);
 }
 
+function changeURL() {
+	fetch(fieldURL.value).then(profils=> {
+			updateView(profils.json());
+	}, err => document.getElementsByTagName('tbody')[0].innerHTML = '');
+}
+
+
+getData("https://demo0050088.mockable.io/simple/profils").then(profils=> {
+	tab = profils;
+	filteredTab = tab;
+	updateView(profils);
+});
+	
 fieldLastname.addEventListener("click", () => sort("lastname"));
 fieldFirstname.addEventListener("click", () => sort("firstname"));
 fieldBalance.addEventListener("click", () => sort("balance"));
 fieldInput.addEventListener("input", () => filter());
+fieldURL.addEventListener("input", () => changeURL());
