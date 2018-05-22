@@ -3,10 +3,8 @@ import {getData, qs} from './recupdata';
 
 let tab = [];
 let filteredTab = [];
-let sortedColumn = '';
-const fieldLastname = document.getElementById('lastname');
-const fieldFirstname = document.getElementById('firstname');
-const fieldBalance = document.getElementById('balance');
+let sortedColumn = true;
+const fields = document.getElementsByClassName('sorted');
 const fieldInput = document.getElementById('filter');
 const fieldURL = document.getElementById('url');
 
@@ -44,74 +42,48 @@ function updateView(profils){
 	}
 }
 
+function sort(name){
+	let sortedTab = [];
 
-function sortNum(name) {
-	let newTab = [];
-	let maxmin = filteredTab[0][name];
-	let index = 0;
-	let sign = 1;
-
-	if (sortedColumn === name) {
-		sign = -1;
-	} else {
-		sortedColumn = name;
+	if(sortedColumn === true){
+		sortedTab = isNaN(parseFloat(filteredTab[0][name])) === false ?
+	 		filteredTab.sort((a, b) => a[name] - b[name]) :
+			sortedTab = filteredTab.sort((a, b) => a[name].localeCompare(b[name]));
+		sortedColumn = false;
 	}
-	while(filteredTab.length > 0) {
-		maxmin = filteredTab[0][name];
-		for (let i = 0; i < filteredTab.length; i++) {
-			if ((parseFloat(filteredTab[i][name]) - parseFloat(maxmin)) * sign >= 0) {
-				maxmin = filteredTab[i][name];
-				index = i;
-			}
-		}
-		newTab.push(filteredTab[index]);
-		filteredTab.splice(index, 1);
+	else {
+		sortedTab = isNaN(parseFloat(filteredTab[0][name])) === false ?
+			sortedTab = filteredTab.sort((a, b) => b[name] - a[name]):
+			sortedTab = filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
+		sortedColumn = true;
 	}
-	filteredTab = newTab;
-	updateView(filteredTab);
+	updateView(sortedTab);
 }
 
-function sortAlpha(name) {
-	let newTab = [];
-	let maxmin = filteredTab[0][name];
-	let index = 0;
-	let sign = 1;
+// function filter(tab) {
+// 	filteredTab = [];
+// 	let profilsLastname = [];
+// 	let profilsFirstname = [];
+// 	const str = fieldInput.value.toUpperCase();
 
-	if (sortedColumn === name) {
-		sign = -1;
-	} else {
-		sortedColumn = name;
-	}
-	while(filteredTab.length > 0) {
-		maxmin = filteredTab[0][name];
-		for (let i = 0; i < filteredTab.length; i++) {
-			if (maxmin.localeCompare(filteredTab[i][name]) * sign >= 0) {
-				maxmin = filteredTab[i][name]; 
-				index = i;
-			}
-		}
-		newTab.push(filteredTab[index]);
-		filteredTab.splice(index, 1);
-	}
-	filteredTab = newTab;
-	updateView(filteredTab);
-}
+// 	for (let i = 0; i < tab.length; i++) {
+// 		profilsLastname = tab[i].lastname.toUpperCase();
+// 		profilsFirstname = tab[i].firstname.toUpperCase();
+// 		if (profilsLastname.includes(str) || profilsFirstname.includes(str)) {
+// 			filteredTab.push(tab[i]);
+// 		}
+// 	}
+// 	updateView(filteredTab);
+// }
 
-function filter() {
+function filter(tab){
 	filteredTab = [];
-	let profilsLastname = [];
-	let profilsFirstname = [];
-	let str = fieldInput.value.toUpperCase();
-
-	for (let i = 0; i < tab.length; i++) {
-		profilsLastname = tab[i].lastname.toUpperCase();
-		profilsFirstname = tab[i].firstname.toUpperCase();
-		if (profilsLastname.includes(str) || profilsFirstname.includes(str)) {
-			filteredTab.push(tab[i]);
-		}
-	}
+	const str = fieldInput.value.toUpperCase();
+	filteredTab = tab.filter(profil => profil.lastname.toUpperCase().includes(str) 
+		|| profil.firstname.toUpperCase().includes(str));
 	updateView(filteredTab);
 }
+
 
 function changeURL() {
 	fetch(fieldURL.value).then(profils=> {
@@ -125,8 +97,7 @@ getData("https://demo0050088.mockable.io/simple/profils").then(profils=> {
 	updateView(profils);
 });
 
-fieldLastname.addEventListener("click", () => sortAlpha("lastname"));
-fieldFirstname.addEventListener("click", () => sortAlpha("firstname"));
-fieldBalance.addEventListener("click", () => sortNum("balance"));
-fieldInput.addEventListener("input", () => filter());
+[...fields].map(field => field.addEventListener("click", () => sort(field.textContent.toLowerCase())));
+fieldInput.addEventListener("input", () => filter(tab));
 fieldURL.addEventListener("input", () => changeURL());
+
