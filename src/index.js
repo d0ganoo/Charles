@@ -24,10 +24,10 @@ function showModalBox(profilDetails){
 function updateView(profils){
 	let str = "";
 	for (let i = 0; i < profils.length; i++) {
-	str = `${str}<tr id="${profils[i].id}"><td><img src="${profils[i].picture}"></td>
-			<td>${profils[i].lastname}</td>
-			<td>${profils[i].firstname}</td>
-			<td>${profils[i].balance}</td></tr>`
+		str = `${str}<tr id="${profils[i].id}"><td><img src="${profils[i].picture}"></td>
+				<td>${profils[i].lastname}</td>
+				<td>${profils[i].firstname}</td>
+				<td>${profils[i].balance}</td></tr>`
 	}
 	document.getElementsByTagName('tbody')[0].innerHTML = str;
 	let tabProfils = document.querySelectorAll('tbody tr');
@@ -60,21 +60,6 @@ function sort(name){
 	updateView(sortedTab);
 }
 
-// function filter(tab) {
-// 	filteredTab = [];
-// 	let profilsLastname = [];
-// 	let profilsFirstname = [];
-// 	const str = fieldInput.value.toUpperCase();
-
-// 	for (let i = 0; i < tab.length; i++) {
-// 		profilsLastname = tab[i].lastname.toUpperCase();
-// 		profilsFirstname = tab[i].firstname.toUpperCase();
-// 		if (profilsLastname.includes(str) || profilsFirstname.includes(str)) {
-// 			filteredTab.push(tab[i]);
-// 		}
-// 	}
-// 	updateView(filteredTab);
-// }
 
 function filter(tab){
 	filteredTab = [];
