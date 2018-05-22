@@ -1,5 +1,5 @@
 
-import {getData, qs} from './recupdata';
+import {getData} from './recupdata';
 
 let tab = [];
 let filteredTab = [];
