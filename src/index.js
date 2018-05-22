@@ -3,6 +3,7 @@ import {getData, qs} from './recupdata';
 
 let tab = [];
 let filteredTab = [];
+let sortedColumn = '';
 const fieldLastname = document.getElementById('lastname');
 const fieldFirstname = document.getElementById('firstname');
 const fieldBalance = document.getElementById('balance');
@@ -50,9 +51,10 @@ function sortNum(name) {
 	let index = 0;
 	let sign = 1;
 
-	document.getElementById(name).classList.toggle("sorted");
-	if (document.getElementById(name).classList.contains("sorted")) {
+	if (sortedColumn === name) {
 		sign = -1;
+	} else {
+		sortedColumn = name;
 	}
 	while(filteredTab.length > 0) {
 		maxmin = filteredTab[0][name];
@@ -75,9 +77,10 @@ function sortAlpha(name) {
 	let index = 0;
 	let sign = 1;
 
-	document.getElementById(name).classList.toggle("sorted");
-	if (document.getElementById(name).classList.contains("sorted")) {
+	if (sortedColumn === name) {
 		sign = -1;
+	} else {
+		sortedColumn = name;
 	}
 	while(filteredTab.length > 0) {
 		maxmin = filteredTab[0][name];
