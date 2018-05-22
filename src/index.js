@@ -54,24 +54,24 @@ function sortNum(name) {
 	if (document.getElementById(name).classList.contains("sorted")) {
 		sign = -1;
 	}
-	while(tab.length > 0) {
-		maxmin = tab[0][name];
-		for (let i = 0; i < tab.length; i++) {
-			if ((parseFloat(tab[i][name]) - parseFloat(maxmin)) * sign >= 0) {
-				maxmin = tab[i][name];
+	while(filteredTab.length > 0) {
+		maxmin = filteredTab[0][name];
+		for (let i = 0; i < filteredTab.length; i++) {
+			if ((parseFloat(filteredTab[i][name]) - parseFloat(maxmin)) * sign >= 0) {
+				maxmin = filteredTab[i][name];
 				index = i;
 			}
 		}
-		newTab.push(tab[index]);
-		tab.splice(index, 1);
+		newTab.push(filteredTab[index]);
+		filteredTab.splice(index, 1);
 	}
-	tab = newTab;
-	updateView(tab);
+	filteredTab = newTab;
+	updateView(filteredTab);
 }
 
 function sortAlpha(name) {
 	let newTab = [];
-	let maxmin = tab[0][name];
+	let maxmin = filteredTab[0][name];
 	let index = 0;
 	let sign = 1;
 
@@ -79,11 +79,11 @@ function sortAlpha(name) {
 	if (document.getElementById(name).classList.contains("sorted")) {
 		sign = -1;
 	}
-	while(tab.length > 0) {
-		maxmin = tab[0][name];
-		for (let i = 0; i < tab.length; i++) {
-			if (maxmin.localeCompare(tab[i][name]) * sign >= 0) {
-				maxmin = tab[i][name]; 
+	while(filteredTab.length > 0) {
+		maxmin = filteredTab[0][name];
+		for (let i = 0; i < filteredTab.length; i++) {
+			if (maxmin.localeCompare(filteredTab[i][name]) * sign >= 0) {
+				maxmin = filteredTab[i][name]; 
 				index = i;
 			}
 		}
