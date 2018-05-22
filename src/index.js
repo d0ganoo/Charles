@@ -99,9 +99,14 @@ function sortAlpha(name) {
 
 function filter() {
 	filteredTab = [];
+	let profilsLastname = [];
+	let profilsFirstname = [];
+	let str = fieldInput.value.toUpperCase();
 
 	for (let i = 0; i < tab.length; i++) {
-		if (tab[i].lastname.toUpperCase().includes(fieldInput.value.toUpperCase()) || tab[i].firstname.toUpperCase().includes(fieldInput.value.toUpperCase())) {
+		profilsLastname = tab[i].lastname.toUpperCase();
+		profilsFirstname = tab[i].firstname.toUpperCase();
+		if (profilsLastname.includes(str) || profilsFirstname.includes(str)) {
 			filteredTab.push(tab[i]);
 		}
 	}
