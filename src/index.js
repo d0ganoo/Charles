@@ -46,40 +46,47 @@ getData().then(profils=> {
 	updateView(profils);
 });
 
-function sort(name) {
+function sortNum(name) {
 	let newTab = [];
 	let maxmin = tab[0][name];
 	let index = 0;
+	let sign = 1;
 
 	document.getElementById(name).classList.toggle("sorted");
+	if (document.getElementById(name).classList.contains("sorted")) {
+		sign = -1;
+	}
 	while(tab.length > 0) {
-		console.log("while");
 		maxmin = tab[0][name];
 		for (let i = 0; i < tab.length; i++) {
-			if (name.localeCompare("balance") == 0) {
-				if (document.getElementById(name).classList.contains("sorted")) {
-					if (parseFloat(tab[i][name]) >= parseFloat(maxmin)) {
-						maxmin = tab[i][name];
-						index = i;
-					}
-				} else {
-					if (parseFloat(tab[i][name]) <= parseFloat(maxmin)) {
-						maxmin = tab[i][name];
-						index = i;
-					}
-				}
-			} else {
-				if (document.getElementById(name).classList.contains("sorted")) {
-					if (maxmin.localeCompare(tab[i][name]) >= 0) {
-						maxmin = tab[i][name]; 
-						index = i;
-					}
-				} else {
-					if (maxmin.localeCompare(tab[i][name]) <= 0) {
-						maxmin = tab[i][name];
-						index = i;
-					}
-				}
+			if ((parseFloat(tab[i][name]) - parseFloat(maxmin)) * sign >= 0) {
+				maxmin = tab[i][name];
+				index = i;
+			}
+		}
+		newTab.push(tab[index]);
+		tab.splice(index, 1);
+	}
+	tab = newTab;
+	updateView(tab);
+}
+
+function sortAlpha(name) {
+	let newTab = [];
+	let maxmin = tab[0][name];
+	let index = 0;
+	let sign = 1;
+
+	document.getElementById(name).classList.toggle("sorted");
+	if (document.getElementById(name).classList.contains("sorted")) {
+		sign = -1;
+	}
+	while(tab.length > 0) {
+		maxmin = tab[0][name];
+		for (let i = 0; i < tab.length; i++) {
+			if (maxmin.localeCompare(tab[i][name]) * sign >= 0) {
+				maxmin = tab[i][name]; 
+				index = i;
 			}
 		}
 		newTab.push(tab[index]);
@@ -100,7 +107,7 @@ function filter() {
 	updateView(newTab);
 }
 
-fieldLastname.addEventListener("click", () => sort("lastname"));
-fieldFirstname.addEventListener("click", () => sort("firstname"));
-fieldBalance.addEventListener("click", () => sort("balance"));
+fieldLastname.addEventListener("click", () => sortAlpha("lastname"));
+fieldFirstname.addEventListener("click", () => sortAlpha("firstname"));
+fieldBalance.addEventListener("click", () => sortNum("balance"));
 fieldInput.addEventListener("input", () => filter());
