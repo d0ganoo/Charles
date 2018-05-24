@@ -9,6 +9,17 @@ const fieldInput = document.getElementById('filter');
 const fieldURL = document.getElementById('url');
 
 
+function displayCounterProfils(nbProfils, nbTotalProfils){
+	let str = `<tr>${nbProfils}/ ${nbTotalProfils}</tr>`;
+	document.getElementsByTagName('tfoot')[0].innerHTML = str;
+}
+
+function counterProfils(profils){
+	return function(){
+		return profils.length;
+	}
+}
+
 function showModalBox(profilDetails){
 	let str = `<span onclick="document.getElementById('modal').innerHTML =''">Fermer [X]</span><br>
 			Nom: ${profilDetails.lastname}<br/>
@@ -21,7 +32,7 @@ function showModalBox(profilDetails){
 	document.getElementById('modal').innerHTML = str;
 }
 
-function updateView(profils){
+function updateView(profils, nbProfils, nbTotalProfils = counterProfils(profils)){
 	let str = "";
 	for (let i = 0; i < profils.length; i++) {
 	str = `${str}<tr id="${profils[i].id}"><td><img src="${profils[i].picture}"></td>
@@ -30,6 +41,7 @@ function updateView(profils){
 			<td>${profils[i].balance}</td></tr>`
 	}
 	document.getElementsByTagName('tbody')[0].innerHTML = str;
+	displayCounterProfils(nbProfils(), nbTotalProfils());
 	let tabProfils = document.querySelectorAll('tbody tr');
 	for (let i = 0; i < tabProfils.length; i++) {
 		tabProfils[i].addEventListener("click", () => {
@@ -57,7 +69,8 @@ function sort(name){
 			sortedTab = filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
 		sortedColumn = true;
 	}
-	updateView(sortedTab);
+	let nbTotalProfils = counterProfils(sortedTab);
+	updateView(sortedTab, nbTotalProfils);
 }
 
 // function filter(tab) {
@@ -81,7 +94,9 @@ function filter(tab){
 	const str = fieldInput.value.toUpperCase();
 	filteredTab = tab.filter(profil => profil.lastname.toUpperCase().includes(str) 
 		|| profil.firstname.toUpperCase().includes(str));
-	updateView(filteredTab);
+	let nbProfils = counterProfils(filteredTab);
+	let nbTotalProfils = counterProfils(tab);
+	updateView(filteredTab, nbProfils, nbTotalProfils);
 }
 
 
@@ -94,7 +109,8 @@ function changeURL() {
 getData("https://demo0050088.mockable.io/simple/profils").then(profils=> {
 	tab = profils;
 	filteredTab = tab;
-	updateView(profils);
+	let nbTotalProfils = counterProfils(tab);
+	updateView(profils,nbTotalProfils);
 });
 
 [...fields].map(field => field.addEventListener("click", () => sort(field.textContent.toLowerCase())));
