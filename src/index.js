@@ -55,22 +55,20 @@ function updateView(profils, nbProfils, nbTotalProfils = counterProfils(profils)
 }
 
 function sort(name){
-	let sortedTab = [];
-
 	if(sortedColumn === true){
-		sortedTab = isNaN(parseFloat(filteredTab[0][name])) === false ?
+		isNaN(parseFloat(filteredTab[0][name])) === false ?
 	 		filteredTab.sort((a, b) => a[name] - b[name]) :
-			sortedTab = filteredTab.sort((a, b) => a[name].localeCompare(b[name]));
+			filteredTab.sort((a, b) => a[name].localeCompare(b[name]));
 		sortedColumn = false;
 	}
 	else {
-		sortedTab = isNaN(parseFloat(filteredTab[0][name])) === false ?
-			sortedTab = filteredTab.sort((a, b) => b[name] - a[name]):
-			sortedTab = filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
+		isNaN(parseFloat(filteredTab[0][name])) === false ?
+			filteredTab.sort((a, b) => b[name] - a[name]):
+			filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
 		sortedColumn = true;
 	}
-	let nbTotalProfils = counterProfils(sortedTab);
-	updateView(sortedTab, nbTotalProfils);
+	let nbTotalProfils = counterProfils(filteredTab);
+	updateView(filteredTab, nbTotalProfils);
 }
 
 
