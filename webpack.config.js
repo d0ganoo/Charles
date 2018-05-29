@@ -55,6 +55,9 @@ module.exports = {
 		chunkFilename: '[name].[chunkhash].js',
 		path: path.resolve(__dirname, 'dist')
 	},
+	devServer: {
+	  open: true,
+	},
 
 	mode: 'production'
 };
