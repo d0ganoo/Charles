@@ -10,12 +10,13 @@ export class App {
 		getData(url).then(profils => {
 			this.tab = profils.map((el) => new Profil(el));
 			this.filteredTab = this.tab;
-			this.updateView(this.tab);
+			this.updateView();
 		});
+		fieldURL.value = url;
 		this.sortedColumn = true;
 
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
-		fieldInput.addEventListener("input", () => this.filter(this.tab));
+		fieldInput.addEventListener("input", () => this.filter());
 		fieldURL.addEventListener("input", () => this.changeURL());
 		console.log("App construcor called.");
 	}
@@ -24,20 +25,16 @@ export class App {
 		document.getElementById('modal').innerHTML = profilDetails.getModalHTML();
 	}
 
-	updateView(profils) {
+	updateView() {
 		let str = "";
-		for (let i = 0; i < profils.length; i++) {
-			str = str + profils[i].getRowHTML();
+
+		for (let i = 0; i < this.filteredTab.length; i++) {
+			str = str + this.filteredTab[i].getRowHTML();
 		}
 		document.getElementsByTagName('tbody')[0].innerHTML = str;
-		let tabProfils = document.querySelectorAll('tbody tr');
-		for (let i = 0; i < tabProfils.length; i++) {
-			tabProfils[i].addEventListener("click", () => {
-				for (let j = 0; j < profils.length; j++) {
-					if (profils[j].id == tabProfils[i].id) {
-						this.showModalBox(profils[i]);
-					}
-				}
+		for (let i = 0; i < this.filteredTab.length; i++) {
+			document.getElementById(this.filteredTab[i].id).addEventListener("click", () => {
+				this.showModalBox(this.filteredTab[i]);
 			});
 		}
 	}
@@ -58,23 +55,23 @@ export class App {
 			}
 			this.sortedColumn = true;
 		}
-		this.updateView(this.filteredTab);
+		this.updateView();
 	}
 
-	filter(tab) {
-		this.filteredTab = [];
+	filter() {
 		const str = fieldInput.value.toUpperCase();
-		this.filteredTab = tab.filter(profil =>
+
+		this.filteredTab = this.tab.filter(profil =>
 			profil.lastname.toUpperCase().includes(str) || profil.firstname.toUpperCase().includes(str)
 		);
-		this.updateView(this.filteredTab);
+		this.updateView();
 	}
 
 	changeURL() {
 		fetch(fieldURL.value).then(profils => {
 			this.tab = profils.map((el) => new Profil(el));
 			this.filteredTab = this.tab;
-			this.updateView(this.tab);
+			this.updateView();
 		}, err => document.getElementsByTagName('tbody')[0].innerHTML = '');
 	}
 };
