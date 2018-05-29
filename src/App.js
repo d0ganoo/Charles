@@ -1,4 +1,5 @@
 import {getData} from './recupdata';
+import {Profil} from './Profil';
 
 const fields = document.getElementsByClassName('sorted');
 const fieldInput = document.getElementById('filter');
@@ -7,11 +8,10 @@ const fieldURL = document.getElementById('url');
 export class App {
 	constructor(url) {
 		getData(url).then(profils => {
-			this.tab = profils;
-			this.filteredTab = profils;
-			this.updateView(profils);
+			this.tab = profils.map((el) => new Profil(el));
+			this.filteredTab = this.tab;
+			this.updateView(this.tab);
 		});
-		this.url = url;
 		this.sortedColumn = true;
 
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
@@ -21,24 +21,13 @@ export class App {
 	}
 
 	showModalBox(profilDetails) {
-		let str = `<span onclick="document.getElementById('modal').innerHTML =''">Fermer [X]</span><br>
-				Nom: ${profilDetails.lastname}<br/>
-				Prenom: ${profilDetails.firstname}<br/>
-				Balance	${profilDetails.balance}<br/>
-				Age: ${profilDetails.age}<br/>
-				Email: ${profilDetails.email}<br/>
-				Adresse: ${profilDetails.address}<br/>
-				Societé: ${profilDetails.company}`;
-		document.getElementById('modal').innerHTML = str;
+		document.getElementById('modal').innerHTML = profilDetails.getModalHTML();
 	}
 
 	updateView(profils) {
 		let str = "";
 		for (let i = 0; i < profils.length; i++) {
-		str = `${str}<tr id="${profils[i].id}"><td><img src="${profils[i].picture}"></td>
-				<td>${profils[i].lastname}</td>
-				<td>${profils[i].firstname}</td>
-				<td>${profils[i].balance}</td></tr>`
+			str = str + profils[i].getRowHTML();
 		}
 		document.getElementsByTagName('tbody')[0].innerHTML = str;
 		let tabProfils = document.querySelectorAll('tbody tr');
@@ -46,7 +35,7 @@ export class App {
 			tabProfils[i].addEventListener("click", () => {
 				for (let j = 0; j < profils.length; j++) {
 					if (profils[j].id == tabProfils[i].id) {
-						showModalBox(profils[i]);
+						this.showModalBox(profils[i]);
 					}
 				}
 			});
@@ -54,16 +43,19 @@ export class App {
 	}
 
 	sort(name) {
-		if(this.sortedColumn === true){
-			isNaN(parseFloat(this.filteredTab[0][name])) === false ?
-		 		this.filteredTab.sort((a, b) => a[name] - b[name]) :
+		if (this.sortedColumn) {
+			if (isNaN(parseFloat(this.filteredTab[0][name]))) {
 				this.filteredTab.sort((a, b) => a[name].localeCompare(b[name]));
+			} else {
+				this.filteredTab.sort((a, b) => a[name] - b[name]);
+			}
 			this.sortedColumn = false;
-		}
-		else {
-			isNaN(parseFloat(this.filteredTab[0][name])) === false ?
-				this.filteredTab.sort((a, b) => b[name] - a[name]):
+		} else {
+			if (isNaN(parseFloat(this.filteredTab[0][name]))) {
 				this.filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
+			} else {
+				this.filteredTab.sort((a, b) => b[name] - a[name]);
+			}
 			this.sortedColumn = true;
 		}
 		this.updateView(this.filteredTab);
@@ -73,10 +65,16 @@ export class App {
 		this.filteredTab = [];
 		const str = fieldInput.value.toUpperCase();
 		this.filteredTab = tab.filter(profil =>
-			profil.lastname.toUpperCase().includes(str)|| profil.firstname.toUpperCase().includes(str)
+			profil.lastname.toUpperCase().includes(str) || profil.firstname.toUpperCase().includes(str)
 		);
 		this.updateView(this.filteredTab);
 	}
 
-
+	changeURL() {
+		fetch(fieldURL.value).then(profils => {
+			this.tab = profils.map((el) => new Profil(el));
+			this.filteredTab = this.tab;
+			this.updateView(this.tab);
+		}, err => document.getElementsByTagName('tbody')[0].innerHTML = '');
+	}
 };
