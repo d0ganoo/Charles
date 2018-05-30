@@ -1,4 +1,7 @@
-export function sortArray(arr, prop, ascend) {
+function Tools(){
+}
+
+Tools.prototype.sortArray = function (arr, prop, ascend) {
 	const sortAlpha = (x, y) => x.localeCompare(y);
 	const sortNum = (x, y) => x - y;
 
@@ -8,12 +11,14 @@ export function sortArray(arr, prop, ascend) {
 
 		return compareFunction(finalA, finalB);
 	});
-}
+};
 
-export function filterArray(arr, input) {
+Tools.prototype.filterArray = function (arr, input) {
 	const str = input.toUpperCase();
 
 	return arr.filter(profil =>
 		profil.lastname.toUpperCase().includes(str) || profil.firstname.toUpperCase().includes(str)
 	);
-}
+};
+
+module.exports = Tools;

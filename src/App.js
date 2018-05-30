@@ -1,7 +1,8 @@
 import {getData} from './recupdata';
 import {Profil} from './Profil';
-import {sortArray, filterArray} from './tools';
 
+var Tools = require('./Tools');
+const tools = new Tools();
 const fields = document.getElementsByClassName('sorted');
 const fieldInput = document.getElementById('filter');
 const fieldURL = document.getElementById('url');
@@ -41,13 +42,13 @@ export class App {
 	}
 
 	sort(name) {
-		this.filteredTab = sortArray(this.filteredTab, name, this.sortedColumn !== name);
+		this.filteredTab = tools.sortArray(this.filteredTab, name, this.sortedColumn !== name);
 		this.sortedColumn = this.sortedColumn === name ? "" : name;
 		this.updateView();
 	}
 
 	filter() {
-		this.filteredTab = filterArray(this.tab, fieldInput.value);
+		this.filteredTab = tools.filterArray(this.tab, fieldInput.value);
 		this.updateView();
 	}
 
