@@ -4,6 +4,7 @@ import {Profil} from './Profil';
 const fields = document.getElementsByClassName('sorted');
 const fieldInput = document.getElementById('filter');
 const fieldURL = document.getElementById('url');
+const buttonModal = document.getElementById('modal-button');
 
 export class App {
 	constructor(url) {
@@ -18,11 +19,12 @@ export class App {
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
 		fieldInput.addEventListener("input", () => this.filter());
 		fieldURL.addEventListener("input", () => this.changeURL());
-		console.log("App construcor called.");
+		buttonModal.addEventListener("click", () => document.getElementById('modal').classList.add('hidden'));
 	}
 
 	showModalBox(profilDetails) {
-		document.getElementById('modal').innerHTML = profilDetails.getModalHTML();
+		document.getElementById('profil').innerHTML = profilDetails.getModalHTML();
+		document.getElementById('modal').classList.remove('hidden');
 	}
 
 	updateView() {

@@ -9,7 +9,6 @@ export class Profil {
 		this.company = tmp.company;
 		this.picture = tmp.picture;
 		this.id = tmp.id;
-		console.log("Profil construcor called.");
 	}
 
 	getRowHTML() {
