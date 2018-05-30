@@ -53,10 +53,10 @@ export class App {
 	}
 
 	changeURL() {
-		fetch(fieldURL.value).then(profils => {
+		getData(fieldURL.value).then(profils => {
 			this.tab = profils.map((el) => new Profil(el));
 			this.filteredTab = this.tab;
 			this.updateView();
-		}, err => document.getElementsByTagName('tbody')[0].innerHTML = '');
+		});
 	}
 };

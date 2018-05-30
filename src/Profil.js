@@ -29,8 +29,4 @@ export class Profil {
 				Adresse: ${this.address}<br/>
 				Societé: ${this.company}`;
 	}
-
-	getValue(key) {
-		return this[key];
-	}
 }
