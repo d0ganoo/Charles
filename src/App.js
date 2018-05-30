@@ -1,5 +1,6 @@
 import {getData} from './recupdata';
 import {Profil} from './Profil';
+import {sortArray, filterArray} from './tools';
 
 const fields = document.getElementsByClassName('sorted');
 const fieldInput = document.getElementById('filter');
@@ -14,7 +15,7 @@ export class App {
 			this.updateView();
 		});
 		fieldURL.value = url;
-		this.sortedColumn = true;
+		this.sortedColumn = "";
 
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
 		fieldInput.addEventListener("input", () => this.filter());
@@ -28,44 +29,25 @@ export class App {
 	}
 
 	updateView() {
-		let str = "";
+		const str = this.filteredTab.reduce((acc, profil) => acc + profil.getRowHTML(), "");
 
-		for (let i = 0; i < this.filteredTab.length; i++) {
-			str = str + this.filteredTab[i].getRowHTML();
-		}
 		document.getElementsByTagName('tbody')[0].innerHTML = str;
-		for (let i = 0; i < this.filteredTab.length; i++) {
-			document.getElementById(this.filteredTab[i].id).addEventListener("click", () => {
-				this.showModalBox(this.filteredTab[i]);
-			});
-		}
+
+		this.filteredTab.map((profil) =>
+			document.getElementById(profil.id).addEventListener("click", () => {
+				this.showModalBox(profil);
+			})
+		);
 	}
 
 	sort(name) {
-		if (this.sortedColumn) {
-			if (isNaN(parseFloat(this.filteredTab[0][name]))) {
-				this.filteredTab.sort((a, b) => a[name].localeCompare(b[name]));
-			} else {
-				this.filteredTab.sort((a, b) => a[name] - b[name]);
-			}
-			this.sortedColumn = false;
-		} else {
-			if (isNaN(parseFloat(this.filteredTab[0][name]))) {
-				this.filteredTab.sort((a, b) => b[name].localeCompare(a[name]));
-			} else {
-				this.filteredTab.sort((a, b) => b[name] - a[name]);
-			}
-			this.sortedColumn = true;
-		}
+		this.filteredTab = sortArray(this.filteredTab, name, this.sortedColumn !== name);
+		this.sortedColumn = this.sortedColumn === name ? "" : name;
 		this.updateView();
 	}
 
 	filter() {
-		const str = fieldInput.value.toUpperCase();
-
-		this.filteredTab = this.tab.filter(profil =>
-			profil.lastname.toUpperCase().includes(str) || profil.firstname.toUpperCase().includes(str)
-		);
+		this.filteredTab = filterArray(this.tab, fieldInput.value);
 		this.updateView();
 	}
 

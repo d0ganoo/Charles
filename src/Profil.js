@@ -1,14 +1,14 @@
 export class Profil {
-	constructor(tmp) {
-		this.lastname = tmp.lastname;
-		this.firstname = tmp.firstname;
-		this.balance = tmp.balance;
-		this.age = tmp.age;
-		this.email = tmp.email;
-		this.address = tmp.address;
-		this.company = tmp.company;
-		this.picture = tmp.picture;
-		this.id = tmp.id;
+	constructor(profil) {
+		this.lastname = profil.lastname;
+		this.firstname = profil.firstname;
+		this.balance = profil.balance;
+		this.age = profil.age;
+		this.email = profil.email;
+		this.address = profil.address;
+		this.company = profil.company;
+		this.picture = profil.picture;
+		this.id = profil.id;
 	}
 
 	getRowHTML() {
