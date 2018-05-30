@@ -57,6 +57,10 @@ export class App {
 			this.tab = profils.map((el) => new Profil(el));
 			this.filteredTab = this.tab;
 			this.updateView();
+		}).catch(error => {
+			this.tab = [];
+			this.filteredTab = this.tab;
+			this.updateView();
 		});
 	}
 };
