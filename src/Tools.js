@@ -21,4 +21,10 @@ Tools.prototype.filterArray = function (arr, input) {
 	);
 };
 
+Tools.prototype.limitArray = function (arr, limit, sign) {
+	return arr.filter(profil =>
+		(profil.balance - limit) * sign < 0
+	);
+};
+
 module.exports = Tools;

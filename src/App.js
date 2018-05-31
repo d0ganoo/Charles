@@ -3,9 +3,11 @@ import {Profil} from './Profil';
 
 var Tools = require('./Tools');
 const tools = new Tools();
-const fields = document.getElementsByClassName('sorted');
+const fields = document.getElementsByClassName('sortable');
 const fieldInput = document.getElementById('filter');
 const fieldURL = document.getElementById('url');
+const fieldSelector = document.getElementById('selector');
+const fieldLimit = document.getElementById('limit');
 const buttonModal = document.getElementById('modal-button');
 
 export class App {
@@ -16,6 +18,8 @@ export class App {
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
 		fieldInput.addEventListener("input", () => this.filter());
 		fieldURL.addEventListener("input", () => this.changeURL(fieldURL.value));
+		fieldSelector.addEventListener("input", () => this.limit());
+		fieldLimit.addEventListener("input", () => this.limit());
 		buttonModal.addEventListener("click", () => document.getElementById('modal').classList.add('hidden'));
 	}
 
@@ -43,6 +47,17 @@ export class App {
 
 	filter() {
 		this.filteredTab = tools.filterArray(this.tab, fieldInput.value);
+		this.updateView();
+	}
+
+	limit() {
+		let sign = fieldSelector.value !== "lt" ? -1 : 1
+
+		if (fieldSelector.value === "all") {
+			this.filteredTab = this.tab;
+		} else {
+			this.filteredTab = tools.limitArray(this.tab, fieldLimit.value, sign);
+		}
 		this.updateView();
 	}
 

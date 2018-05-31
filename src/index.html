@@ -6,14 +6,20 @@
 </head>
 <body>
 	URL : <input id="url" type="text"><br>
-	Filter : <input id="filter" type="text">
+	Filter : <input id="filter" type="text"><br>
+	<select id="selector">
+		<option value="lt">Less than</option>
+		<option value="gt">Greater than</option>
+		<option value="all">All</option>
+	</select>
+	<input id="limit" step="10" type="number" value="0">
 	<table>
 		<thead>
 			<tr>
 				<th>Picture</th>
-				<th id="lastname" class="sorted">Lastname</th>
-				<th id="firstname" class="sorted">Firstname</th>
-				<th id="balance" class="sorted">Balance</th>
+				<th id="lastname" class="sortable">Lastname</th>
+				<th id="firstname" class="sortable">Firstname</th>
+				<th id="balance" class="sortable">Balance</th>
 			</tr>
 		</thead>
 		<tbody></tbody>
