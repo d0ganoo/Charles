@@ -10,17 +10,12 @@ const buttonModal = document.getElementById('modal-button');
 
 export class App {
 	constructor(url) {
-		getData(url).then(profils => {
-			this.tab = profils.map((el) => new Profil(el));
-			this.filteredTab = this.tab;
-			this.updateView();
-		});
+		this.changeURL(url);
 		fieldURL.value = url;
 		this.sortedColumn = "";
-
 		[...fields].map(field => field.addEventListener("click", () => this.sort(field.textContent.toLowerCase())));
 		fieldInput.addEventListener("input", () => this.filter());
-		fieldURL.addEventListener("input", () => this.changeURL());
+		fieldURL.addEventListener("input", () => this.changeURL(fieldURL.value));
 		buttonModal.addEventListener("click", () => document.getElementById('modal').classList.add('hidden'));
 	}
 
@@ -33,7 +28,6 @@ export class App {
 		const str = this.filteredTab.reduce((acc, profil) => acc + profil.getRowHTML(), "");
 
 		document.getElementsByTagName('tbody')[0].innerHTML = str;
-
 		this.filteredTab.map((profil) =>
 			document.getElementById(profil.id).addEventListener("click", () => {
 				this.showModalBox(profil);
@@ -52,8 +46,8 @@ export class App {
 		this.updateView();
 	}
 
-	changeURL() {
-		getData(fieldURL.value).then(profils => {
+	changeURL(url) {
+		getData(url).then(profils => {
 			this.tab = profils.map((el) => new Profil(el));
 			this.filteredTab = this.tab;
 			this.updateView();
